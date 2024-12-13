@@ -1,0 +1,15 @@
+[package]
+name = "rgms"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+glfw = "0.58"
+vulkano = "0.34"
+vulkano-win = "0.34"
+vulkano-shaders = "0.34"
+winit = "0.30.5"
+gl = "0.14.0"
+glam = "0.29.1"
+downcast-rs = "1.2.1"
+mlua = { version = "0.10.2", features = ["lua54", "vendored"] }
