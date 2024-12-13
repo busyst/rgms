@@ -74,6 +74,7 @@ fn main() {
     let resource_manager = Rc::new(RefCell::new(ResourceManager::new()));
     let resource_manager_clone = Rc::clone(&resource_manager);
     let resource_manager_clone_2 = Rc::clone(&resource_manager);
+    let resource_manager_clone_3 = Rc::clone(&resource_manager);
     
     lua.globals().set("material_load_shader", lua.create_function_mut(move |_: &Lua, x: (String, String, String)| {
         let mut s = Box::new(Shader::new()); 
@@ -81,7 +82,7 @@ fn main() {
         resource_manager_clone.borrow_mut().add_resource(&x.0, s);
         Ok(())
     }).unwrap()).unwrap();
-    lua.globals().set("material_load_mesh", lua.create_function_mut(move |lua: &Lua, x: (String, LuaTable)| {
+    lua.globals().set("material_load_mesh", lua.create_function_mut(move |_: &Lua, x: (String, LuaTable)| {
         let mesh_table: LuaTable = x.1;
         
         // Convert LuaTable to Vec of PlanarTextureVertex
@@ -102,6 +103,20 @@ fn main() {
         resource_manager_clone_2.borrow_mut().add_resource(&x.0, s);
         Ok(())
     }).unwrap()).unwrap();
+    lua.globals().set("material_load_texture", lua.create_function_mut(move |_: &Lua, x: (String, String)| {
+        if let Ok(texture) = image::open(x.1){
+            let pixels: Vec<u8> = texture.flipv().to_rgb8()
+            .pixels()
+            .flat_map(|pixel| pixel.0.to_vec())
+            .collect();
+
+            let mut t = Box::new(Texture::new(gl::TEXTURE_2D));
+            t.create();
+            t.set_texture(gl::RGB, texture.width().try_into().unwrap(), texture.height().try_into().unwrap(), gl::RGB, pixels.as_slice());
+            resource_manager_clone_3.borrow_mut().add_resource(&x.0, t);
+        }
+        Ok(())
+    }).unwrap()).unwrap();
 
     let mut tex = Box::new(Texture::new(gl::TEXTURE_2D));
     tex.create();
@@ -113,7 +128,7 @@ fn main() {
     resource_manager.borrow_mut().add_resource("default_texture",  tex);
 
 
-    let mut x = Transform2D::default();
+    let mut x: Transform2D = Transform2D::default();
     
     let mut lua_ok = false;
     let mut lua_loaded = false;
@@ -148,10 +163,10 @@ fn main() {
                 shader.bind();
                 shader.set_uniform_mat3x2("transform", x.transformation_matrix());
             }
-            if let Some(texture) = rm.get_resource_mut::<Texture>("default_texture") {
+            if let Some(texture) = rm.get_resource::<Texture>("default_texture") {
                 texture.bind(gl::TEXTURE0);
             }
-            if let Some(mesh) = rm.get_resource_mut::<Mesh>("default_quad_mesh") {
+            if let Some(mesh) = rm.get_resource::<Mesh>("default_quad_mesh") {
                 mesh.bind();
             }
             gl::DrawArrays(gl::TRIANGLE_STRIP, 0, 4);

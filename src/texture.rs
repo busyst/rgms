@@ -1,3 +1,4 @@
+
 use gl::types::{GLenum, GLint, GLsizei, GLubyte};
 
 pub struct Texture{

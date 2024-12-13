@@ -1,4 +1,6 @@
 
+
+
 local function load_shader(name,vertex_path,fragment_path)
     print("Load shader function")
     local v = read_file(vertex_path)
@@ -21,5 +23,6 @@ function load(x)
     print("Load function: " .. x)
     load_shader("default_shader","./resources/Panel/vertex.vert","./resources/Panel/fragment.frag")
     material_load_mesh("default_quad_mesh",quad)
+    material_load_texture("default_texture","./resources/image.png")
     return ""
 end

@@ -13,3 +13,4 @@ gl = "0.14.0"
 glam = "0.29.1"
 downcast-rs = "1.2.1"
 mlua = { version = "0.10.2", features = ["lua54", "vendored"] }
+image = "0.25.5"

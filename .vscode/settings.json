@@ -3,6 +3,7 @@
         "kys",
         "read_file",
         "material_load_shader",
-        "material_load_mesh"
+        "material_load_mesh",
+        "material_load_texture"
     ]
 }

@@ -12,7 +12,6 @@ pub struct Transform2D {
 
 impl Transform2D {
     pub fn new(position: Vec2, scale: Vec2, radians: f32) -> Self {
-
         let mut transform = Self {
             scale,
             radians,
@@ -24,7 +23,6 @@ impl Transform2D {
     }
 
     pub fn default() -> Self {
-        let hashcode = 19995124;
         Self {
             scale: Vec2::new(1.0, 1.0),
             radians: 0.0,
