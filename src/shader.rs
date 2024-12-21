@@ -9,8 +9,16 @@ pub struct Shader{
 }
 
 impl Shader {
-    pub fn new() -> Shader {
+    /*pub fn new() -> Shader {
         Shader{program:0, uniform_location_cache: HashMap::new() }
+    }*/
+    pub fn create_new(vertex_shader: &str, fragment_shader:  &str) -> Shader {
+        let mut x =Shader {
+            program : 0,
+            uniform_location_cache: HashMap::new(),
+        };
+        x.create(vertex_shader,fragment_shader);
+        x
     }
     pub fn create(&mut self,vertex_shader: &str, fragment_shader:  &str) {
         self.delete();
@@ -142,6 +150,13 @@ impl Shader {
             }
     
             Ok(())
+        }
+    }
+    pub fn bind_ubo(&self, name: &str, binding_point: GLuint) {
+        let c_str = std::ffi::CString::new(name).unwrap();
+        unsafe {
+            let block_index = gl::GetUniformBlockIndex(self.program, c_str.as_ptr());
+            gl::UniformBlockBinding(self.program, block_index, binding_point);
         }
     }
     

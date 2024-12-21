@@ -42,6 +42,22 @@ impl BufferObject {
             );
         }
     }
+    pub fn update_data<T>(&self, offset: usize, size: usize, data: &[T]) {
+        unsafe {
+            gl::BindBuffer(self.buffer_type, self.buffer);
+            gl::BufferSubData(
+                self.buffer_type,
+                offset.try_into().unwrap(),  // offset
+                size.try_into().unwrap(),  // size
+                data.as_ptr() as *const _  // data pointer
+            );
+        }
+    }
+    pub fn bind_to_binding_point(&self, point: u32) {
+        unsafe {
+            gl::BindBufferBase(gl::UNIFORM_BUFFER, point, self.buffer);
+        }
+    }
     fn delete(&mut self) {
         if self.buffer != 0 {
             unsafe { gl::DeleteBuffers(1, &self.buffer) }; // Changed from DeleteVertexArrays to DeleteBuffers
